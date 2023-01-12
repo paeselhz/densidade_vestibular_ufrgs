@@ -1,0 +1,94 @@
+library(dplyr)
+library(ggplot2)
+
+densidades_vestibular_ufrgs <-
+  readr::read_rds('data/densidades_vestibular_ufrgs.rds')
+
+yy <- 
+  densidades_vestibular_ufrgs %>%
+  group_split(ano) %>% 
+  purrr::map_df(
+    function(x) {
+      
+      x %>% 
+        filter(
+          categoria == "Total"
+          # categoria == "Acesso Universal"
+        ) %>% 
+        arrange(desc(densidade)) %>% 
+        head(10) %>% 
+        mutate(
+          rank = 1,
+          rank = cumsum(rank)
+        )
+      
+    }
+  ) %>% 
+  mutate(
+    curso = stringr::str_replace(curso, " - Bacharelado", "")
+  )
+
+top10_2023 <-
+  yy %>% 
+  filter(ano == 2023) %>% 
+  pull(curso)
+
+yy %>% 
+  filter(
+    curso %in% top10_2023
+  ) %>% 
+  mutate(
+    densidade = round(densidade, digits = 2)
+  ) %>% 
+  ggplot(aes(x = ano, y = rank, color = curso, label = densidade)) +
+  geom_point(size = 15) +
+  geom_text(size = 4, color = "white") +
+  geom_line() +
+  scale_y_continuous(trans = "reverse", breaks = 1:20, labels = function(x) paste0("Rank ", x), name = NULL) +
+  scale_x_continuous(breaks = 2017:2023, name = "Ano") + 
+  theme_light() + 
+  guides(color = guide_legend(override.aes = list(size = 1), title = "Curso"))
+
+js_tooltip <-
+  paste0(
+    "function(){return ('Curso: <strong>' +  this.point.curso + ",
+    "'</strong> <br> Rank: ' + this.y + ",
+    "' <br> Densidade: ' + this.point.densidade + ' alunos por vaga')}"
+  )
+
+hc <- 
+  yy %>% 
+  filter(
+    curso %in% top10_2023
+  ) %>% 
+  mutate(
+    densidade = round(densidade, digits = 2)
+  ) %>% 
+  hchart(
+    "spline",
+    hcaes(x = ano, y = rank, group = curso)
+  ) %>% 
+  hc_yAxis(
+    title = "",
+    categories = paste0("Rank ", 0:10),
+    reversed = TRUE,
+    tickInterval = 1,
+    min = 1,
+    max = 10,
+    gridLineWidth = 0
+  ) %>% 
+  hc_xAxis(
+    title = "Ano",
+    gridLineWidth = 0
+  ) %>% 
+  hc_tooltip(
+    formatter = JS(js_tooltip)
+  ) %>% 
+  hc_legend(
+    align = "right",
+    verticalAlign = "top",
+    layout = "vertical"
+  ) %>% 
+  hc_exporting(enabled = TRUE)
+
+# hc$x$hc_opts$series[[1]]$data[[1]]
