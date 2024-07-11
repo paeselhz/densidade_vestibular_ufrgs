@@ -13,7 +13,7 @@ code_style:
 
 .PHONY: data_extraction
 data_extraction:
-	dv_ufrgs/bin/python data_extraction/main.py
+	dv_ufrgs/bin/python functions/main.py
 
 .PHONY: run
 run:
