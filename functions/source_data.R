@@ -2,7 +2,7 @@ source('functions/get_densities_ufrgs.R')
 
 densidades_vestibular_ufrgs <-
   purrr::map_df(
-    2017:2023,
+    2017:2024,
     get_densities_ufrgs
   )
 
