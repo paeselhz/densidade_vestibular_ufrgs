@@ -1,2 +1,17 @@
 .Rproj.user/
 rsconnect/
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+.DS_Store
+
+shiny_bookmarks/
+
+.Renviron
+
+dv_ufrgs/
+
+__pycache__/
