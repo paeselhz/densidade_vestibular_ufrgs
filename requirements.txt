@@ -5,3 +5,4 @@ fastparquet
 shiny
 beautifulsoup4
 Jinja2
+altair
