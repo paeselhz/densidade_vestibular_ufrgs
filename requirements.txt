@@ -4,3 +4,4 @@ requests
 fastparquet
 shiny
 beautifulsoup4
+Jinja2

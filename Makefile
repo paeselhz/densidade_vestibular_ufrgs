@@ -19,8 +19,8 @@ data_extraction:
 run:
 	shiny run shiny_app/app.py
 
-.PHONY: build_shinylive
-build_shinylive:
+.PHONY: shinylive
+shinylive:
 	shinylive export shiny_app docs
 	python3 -m http.server --directory docs --bind localhost 8080
 
