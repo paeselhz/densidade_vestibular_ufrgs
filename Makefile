@@ -14,6 +14,7 @@ code_style:
 .PHONY: data_extraction
 data_extraction:
 	dv_ufrgs/bin/python functions/main.py
+	cp data/densidades_vestibular_ufrgs.parquet shiny_app/data/densidades_vestibular_ufrgs.parquet
 
 .PHONY: run
 run:
